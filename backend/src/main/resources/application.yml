@@ -1,0 +1,52 @@
+server:
+  port: 8080
+externaldata:
+  user-agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:11.0) Gecko/20100101 Firefox/11.0
+  referrer: https://www.google.com
+  site-array:
+    - url: https://polonikabel.by
+      name: Страховая компания
+#    - url: https://www.svetlovka.ru
+#      name: ЦГМБ им.М.А.Светлова
+logging:
+  level:
+    org:
+      hibernate:
+        type: info
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+  datasource:
+    username: zero
+    password: one
+    url: jdbc:postgresql://localhost:5432/search_engine
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changeset/db.changelog-master.xml
+  thymeleaf:
+    prefix: classpath:/templates/
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+
+    #    - url: http://www.playback.ru
+    #      name: Интернет-магазин
+    #    - url: https://ipfran.ru
+    #      name: ИПФ РАН
+    #    - url: http://radiomv.ru
+    #      name: радио
+    #    - url: https://volochek.life
+    #      name: Вышний Волочек
+    #    - url: https://dombulgakova.ru
+    #      name: Булгаковский дом
+    #    - url: https://nikoartgallery.com
+    #      name: Галерея Никогосяна
+    #    - url: https://www.svetlovka.ru
+    #      name: ЦГМБ им.М.А.Светлова
