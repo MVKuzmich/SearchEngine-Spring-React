@@ -11,6 +11,8 @@ import com.kuzmich.searchengineapp.exception.IndexInterruptedException;
 import com.kuzmich.searchengineapp.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -36,7 +38,8 @@ public class IndexingService {
     private final IndexRepository indexRepository;
     private final Lemmatizator lemmatizator;
 
-    public ResultDTO executeIndexation() throws IndexExecutionException, IndexInterruptedException {
+    @Async
+    public void executeIndexation() throws IndexExecutionException, IndexInterruptedException {
         if (indexingExecutor.isExecuting()) {
             throw new IndexExecutionException(new ResultDTO(false, "Индексация уже запущена").getError());
         } else {
@@ -45,7 +48,6 @@ public class IndexingService {
                 indexingExecutor.setExecuting(true);
                 WebSiteAnalyzer.setIndexationStopped(false);
                 indexingExecutor.executeSitesIndexing();
-                return new ResultDTO(true);
             } catch (IndexInterruptedException ex) {
                 WebSiteAnalyzer.setIndexationStopped(true);
                 exceptionMessage = ex.getMessage();
@@ -68,7 +70,7 @@ public class IndexingService {
             indexingExecutor.setExecuting(false);
             WebSiteAnalyzer.setIndexationStopped(true);
             updateSiteStatus("Индексация остановлена пользователем!");
-            return new ResultDTO(true);
+            return new ResultDTO(false);
         }
     }
 

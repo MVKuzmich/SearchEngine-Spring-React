@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -34,9 +36,10 @@ public class SitesConcurrencyIndexingExecutor {
     @Getter
     private boolean isExecuting;
 
+    
     public void executeSitesIndexing() throws IndexInterruptedException {
         List<SiteConfig.SiteObject> siteObjects = siteConfig.getSiteArray();
-        ExecutorService pool = Executors.newFixedThreadPool(siteObjects.size());
+        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         List<ForkJoinPool> fjPoolList = new ArrayList<>();
         try {
             long start = System.currentTimeMillis() / 1000;

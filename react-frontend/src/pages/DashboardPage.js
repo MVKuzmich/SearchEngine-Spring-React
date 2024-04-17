@@ -1,26 +1,23 @@
-import {useState, useEffect} from "react";
-import useSearchEngineService from "../../services/SearchEngineService";
+import {useEffect} from "react";
+import useSearchEngineService from "../services/SearchEngineService";
 
 
-const DashboardTab = () => {
-    const [siteCount, setSiteCount] = useState(0);
-    const [pageCount, setPageCount] = useState(0);
-    const [lemmaCount, setLemmaCount] = useState(0);
-
+const DashboardPage = ({data, onDataLoaded}) => {
+    
     const {getStatistics} = useSearchEngineService();
-
-    useEffect(() => {
-        setInterval(() => getData(), 1000);
-    }, []);
-
+    
     const getData = () => {
+        console.log('getData Dashboard');
         getStatistics().then(onDataLoaded);
     }
-    const onDataLoaded = (data) => {
-        setSiteCount(data.siteCount);
-        setPageCount(data.pageCount);
-        setLemmaCount(data.lemmaCount);
-    }
+    
+
+    useEffect(() => {
+        console.log('first useEffect Dashboard');
+        getData();
+    }, []);
+
+    const {siteCount, pageCount, lemmaCount} = data;
     return (
         <div className="TabContent">
             <div className="Section-header">
@@ -54,4 +51,4 @@ const DashboardTab = () => {
     );
 }
 
-export default DashboardTab;
+export default DashboardPage;

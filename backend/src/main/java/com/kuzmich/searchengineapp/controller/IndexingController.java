@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequiredArgsConstructor
 @Log4j2
+@CrossOrigin
 public class IndexingController {
 
     private final StatisticsService statisticsService;
@@ -24,9 +25,9 @@ public class IndexingController {
 
 
     @GetMapping("/statistics")
-    @CrossOrigin
     @ResponseBody
     public Result getStatisticInformation() {
+        log.info("просят статистику");
         return statisticsService.getStatisticInformation();
     }
 
@@ -34,7 +35,8 @@ public class IndexingController {
     @GetMapping("/startIndexing")
     @ResponseBody
     public ResultDTO startIndexing() {
-        return indexingService.executeIndexation();
+        indexingService.executeIndexation();
+        return new ResultDTO(true);
     }
 
     @GetMapping("/stopIndexing")
