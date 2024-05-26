@@ -10,12 +10,16 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 @Getter
 @Setter
 public class Site extends BaseEntity {
@@ -36,6 +40,7 @@ public class Site extends BaseEntity {
     @NotNull
     private String name;
 
+
     public Site(Status status, long statusTime, String lastError, String url, String name) {
         this.status = status;
         this.statusTime = statusTime;
@@ -49,4 +54,6 @@ public class Site extends BaseEntity {
 
     @OneToMany(mappedBy = "site", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lemma> lemmaList = new ArrayList<>();
+
+    
 }

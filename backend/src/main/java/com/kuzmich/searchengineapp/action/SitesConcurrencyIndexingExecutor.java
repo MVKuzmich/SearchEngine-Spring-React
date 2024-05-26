@@ -1,6 +1,7 @@
 package com.kuzmich.searchengineapp.action;
 
 import com.kuzmich.searchengineapp.config.SiteConfig;
+import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.entity.Site;
 import com.kuzmich.searchengineapp.entity.Status;
 import com.kuzmich.searchengineapp.exception.IndexInterruptedException;
@@ -10,13 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.*;
 
 @Component
@@ -37,8 +36,16 @@ public class SitesConcurrencyIndexingExecutor {
     private boolean isExecuting;
 
     
-    public void executeSitesIndexing() throws IndexInterruptedException {
-        List<SiteConfig.SiteObject> siteObjects = siteConfig.getSiteArray();
+    public void executeSitesIndexing(String url) throws IndexInterruptedException {
+
+        List<SiteObject> siteObjects = new ArrayList<>();
+        if(url != null || url != "") {
+            siteObjects.addAll(handleUrls(url));
+        } else {
+            siteObjects = siteConfig.getSiteArray();
+        }
+
+       
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         List<ForkJoinPool> fjPoolList = new ArrayList<>();
         try {
@@ -79,7 +86,7 @@ public class SitesConcurrencyIndexingExecutor {
         }
     }
 
-    private Site getSite(SiteConfig.SiteObject siteObject) {
+    private Site getSite(SiteObject siteObject) {
         Site site = new Site(
                 Status.INDEXING,
                 System.currentTimeMillis(),
@@ -88,6 +95,11 @@ public class SitesConcurrencyIndexingExecutor {
                 siteObject.getName()
         );
         return siteRepository.saveAndFlush(site);
+    }
+
+    private List<SiteObject> handleUrls(String url) {
+        
+        return new ArrayList<>();
     }
 }
 

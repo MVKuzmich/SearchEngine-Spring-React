@@ -1,7 +1,7 @@
 package com.kuzmich.searchengineapp.entity;
 
 import lombok.*;
-
+import lombok.experimental.SuperBuilder;
 import jakarta.persistence.*;
 import jakarta.persistence.Index;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Page extends BaseEntity {
 
     @Column(name = "path", columnDefinition = "text")

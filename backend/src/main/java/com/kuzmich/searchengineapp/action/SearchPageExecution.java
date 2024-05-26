@@ -9,8 +9,6 @@ import com.kuzmich.searchengineapp.repository.SiteRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.morphology.LuceneMorphology;
 import lombok.extern.log4j.Log4j2;
-import org.apache.lucene.morphology.Morphology;
-import org.apache.lucene.morphology.russian.RussianLuceneMorphology;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -135,7 +133,6 @@ public class SearchPageExecution {
         List<String> lemmaWords = new ArrayList<>(lemmaWordsFromUserQuery);
         Elements elements = document.getElementsMatchingText(createRegex(lemmaWords));
         for (Element element : elements) {
-            String sentence = "";
             String parseText = element.text();
             String[] arr = parseText.split("[\\s.,!:]+\\s*");
             for (String word : arr) {

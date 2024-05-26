@@ -13,6 +13,12 @@ logging:
     org:
       hibernate:
         type: info
+      springframework:
+        test: 
+          web: 
+            servlet:
+              MockMvc: DEBUG
+
 spring:
   jpa:
     hibernate:

@@ -6,7 +6,6 @@ import com.kuzmich.searchengineapp.dto.statistics.Result;
 import com.kuzmich.searchengineapp.dto.statistics.Statistics;
 import com.kuzmich.searchengineapp.dto.statistics.Total;
 import com.kuzmich.searchengineapp.entity.Site;
-import com.kuzmich.searchengineapp.entity.Status;
 import com.kuzmich.searchengineapp.repository.LemmaRepository;
 import com.kuzmich.searchengineapp.repository.PageRepository;
 import com.kuzmich.searchengineapp.repository.SiteRepository;

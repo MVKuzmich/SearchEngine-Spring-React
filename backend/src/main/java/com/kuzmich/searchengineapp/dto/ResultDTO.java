@@ -1,6 +1,5 @@
 package com.kuzmich.searchengineapp.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResultDTO {
-    @JsonProperty("isIndexing")
+
     private boolean result;
 
     private String error;

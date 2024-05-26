@@ -5,9 +5,12 @@ import com.kuzmich.searchengineapp.action.SitesConcurrencyIndexingExecutor;
 import com.kuzmich.searchengineapp.action.WebSiteAnalyzer;
 import com.kuzmich.searchengineapp.config.SiteConfig;
 import com.kuzmich.searchengineapp.dto.ResultDTO;
+import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.entity.*;
 import com.kuzmich.searchengineapp.exception.IndexExecutionException;
 import com.kuzmich.searchengineapp.exception.IndexInterruptedException;
+import com.kuzmich.searchengineapp.exception.SiteNotSaveException;
+import com.kuzmich.searchengineapp.mapper.SiteMapper;
 import com.kuzmich.searchengineapp.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -37,9 +40,10 @@ public class IndexingService {
     private final FieldRepository fieldRepository;
     private final IndexRepository indexRepository;
     private final Lemmatizator lemmatizator;
+    private final SiteMapper siteMapper;
 
     @Async
-    public void executeIndexation() throws IndexExecutionException, IndexInterruptedException {
+    public void executeIndexation(String url) throws IndexExecutionException, IndexInterruptedException {
         if (indexingExecutor.isExecuting()) {
             throw new IndexExecutionException(new ResultDTO(false, "Индексация уже запущена").getError());
         } else {
@@ -47,7 +51,7 @@ public class IndexingService {
             try {
                 indexingExecutor.setExecuting(true);
                 WebSiteAnalyzer.setIndexationStopped(false);
-                indexingExecutor.executeSitesIndexing();
+                indexingExecutor.executeSitesIndexing(url);
             } catch (IndexInterruptedException ex) {
                 WebSiteAnalyzer.setIndexationStopped(true);
                 exceptionMessage = ex.getMessage();
@@ -75,8 +79,8 @@ public class IndexingService {
     }
 
     public ResultDTO executePageIndexation(String pageUrl) throws IndexExecutionException {
-        List<SiteConfig.SiteObject> siteObjects = siteConfig.getSiteArray();
-        Optional<SiteConfig.SiteObject> siteObjectOptional = siteObjects.stream()
+        List<SiteObject> siteObjects = siteConfig.getSiteArray();
+        Optional<SiteObject> siteObjectOptional = siteObjects.stream()
                 .filter(siteObject -> pageUrl.startsWith(siteObject.getUrl()))
                 .findFirst();
         if (siteObjectOptional.isEmpty()) {
@@ -99,6 +103,16 @@ public class IndexingService {
             log.info("Переиндексация завершена");
             return new ResultDTO(true);
         }
+    }
+
+    public ResultDTO saveSite(SiteObject site) throws SiteNotSaveException {
+        try {
+            Site siteEntity = siteMapper.toSite(site);
+            siteRepository.save(siteEntity);            
+            return new ResultDTO(true);
+        } catch(Exception ex) {
+            throw new SiteNotSaveException("The site info is not saved for server causes! Try it later!", ex);
+        }       
     }
 
     private void updateSiteStatus(String message) {

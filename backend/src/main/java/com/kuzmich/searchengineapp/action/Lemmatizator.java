@@ -1,15 +1,13 @@
 package com.kuzmich.searchengineapp.action;
 
 
-import lombok.extern.log4j.Log4j2;
 import org.apache.lucene.morphology.LuceneMorphology;
-import org.apache.lucene.morphology.russian.RussianLuceneMorphology;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.*;
 
-@Log4j2
+
 @Component
 public class Lemmatizator {
 
