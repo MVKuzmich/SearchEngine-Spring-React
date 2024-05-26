@@ -4,9 +4,12 @@ import useInterval from "../hooks/setInterval.hook";
 
 const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
 
-    const [url, setUrl] = useState([]);
+    const [name, setName] = useState("");
+    const [url, setUrl] = useState("");
+    const [submitMessage, setSubmitMessage] = useState("");
+    const [messageVisible, setMessageVisible] = useState(false);
 
-    const { getStatistics, startIndexing, stopIndexing } = useSearchEngineService();
+    const { getStatistics, startIndexing, stopIndexing, addSite } = useSearchEngineService();
 
     const getData = () => {
         console.log('getData Dashboard');
@@ -44,36 +47,56 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
         }
     };
 
+    const site = {
+        name, 
+        url
+    }
+
+    const handleMessageVisibility = () => {
+        setMessageVisible(true);
+        setTimeout(() => {
+          setMessageVisible(false);
+        }, 5000);
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        fetch('<http://localhost:8080/startIndexing>', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: url,
-        })
-        .then(response => response.json())
-        .then(data => console.log('User created:', data))
-        .catch(error => console.error('Error creating user:', error));
-      };
+        const res = addSite(JSON.stringify(site));
+        if(res) {
+            setName("");
+            setUrl("");
+            setSubmitMessage("Your site has been added succesfully!");
+
+        } else {
+            setSubmitMessage(res.error);
+        }
+        handleMessageVisibility();
+      }
     
-      const handleChange = (event) => {
-        const { url } = event.target;
-        setUser(prevUrl => ({ ...prevUser, [name]: value }));
-      };
+      const handleUrlChange = (event) => {
+        setUrl(event.target.value);
+      }
+
+      const handleNameChange = (event) => {
+        setName(event.target.value);
+      }
+
 
     return (
         <div className="ManagementTab">
             <p>Management</p>
             
-            <form>
-                <label htmlFor="fname">Add Site Url: 
-                    <input type="text" id="fname" name="fname" value={url}/>
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="fname">Add Site Name: 
+                    <input type="text" id="fname" placeholder="Enter site name" name="fname" value={name} onChange={handleNameChange}/>
                 </label><br/>
-                {!isIndexing && <button type="button" onClick={() => toggleIndexing(isIndexing)}>Start Indexation</button>}
-                {isIndexing && <button type="button" onClick={() => toggleIndexing(isIndexing)}>Stop Indexation</button>}
+                <label htmlFor="fname">Add Site Url: 
+                    <input type="text" id="fname" placeholder="Enter site domain url" name="fname" value={url} onChange={handleUrlChange}/>
+                </label><br/>
+                {messageVisible && <p className="msg">{submitMessage}</p>}
+                <button type="submit" onSubmit={handleSubmit}>Save site!</button>
             </form>
+            <button type="button" onClick={() => toggleIndexing(isIndexing)}>{isIndexing ? 'Stop' : 'Start'} Indexation</button>
         </div>
     );
 }

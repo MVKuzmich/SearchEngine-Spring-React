@@ -26,7 +26,12 @@ const useSearchEngineService = () => {
         return res;
     }
 
-    return {getStatistics, startIndexing, stopIndexing};
+    const addSite = async (data) => {
+        const res = await request("http://localhost:8080/addSite", 'POST', data);
+        return res;
+    }
+
+    return {getStatistics, startIndexing, stopIndexing, addSite};
     
 }
 
