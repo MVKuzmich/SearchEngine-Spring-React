@@ -31,7 +31,12 @@ const useSearchEngineService = () => {
         return res;
     }
 
-    return {getStatistics, startIndexing, stopIndexing, addSite};
+    const getSites = async () => {
+        const res = await request("http://localhost:8080/sites");
+        return res;
+    }
+
+    return {getStatistics, startIndexing, stopIndexing, addSite, getSites};
     
 }
 

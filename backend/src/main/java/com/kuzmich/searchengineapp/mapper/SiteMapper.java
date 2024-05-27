@@ -22,6 +22,13 @@ public class SiteMapper {
         .build();
     }
 
+    public SiteObject toSiteObject(Site site) {
+        return SiteObject.builder()
+           .url(site.getUrl())
+           .name(site.getName())
+        .build();
+    }
+
     private long getCurrentTimestampMillis() {
         return Instant.now().toEpochMilli();
     }

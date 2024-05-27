@@ -9,6 +9,8 @@ import com.kuzmich.searchengineapp.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +50,11 @@ public class IndexingController {
 
         return indexingService.saveSite(siteObject);
 
+    }
+
+    @GetMapping("/sites")
+    public List<SiteObject> getSites() {
+        return indexingService.getSites();
     }
 
     @PostMapping("/indexPage")
