@@ -8,8 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.entity.Site;
+import com.kuzmich.searchengineapp.entity.Status;
 
-public class SiteMapperTest {
+class SiteMapperTest {
 
     private SiteMapper siteMapper;
 
@@ -20,9 +21,12 @@ public class SiteMapperTest {
     }
 
     @Test
-    public void testMapToMyEntity() {
+    void testMapToSite() {
     
-        SiteObject siteObject = new SiteObject("url", "site");
+        SiteObject siteObject = SiteObject.builder()
+        .name("site")
+        .url("url")
+        .build();
 
         Site site = siteMapper.toSite(siteObject);
 
@@ -31,5 +35,21 @@ public class SiteMapperTest {
         assertEquals("NEW", site.getStatus().name());
         assertNull(site.getId());
     }
-    
+
+    @Test
+    void testMapToSiteObject() {
+        Site site = Site.builder()
+                .id(1)
+                .name("kuzmich")
+                .url("kuzmich.com")
+                .lastError("")
+                .status(Status.INDEXED)
+        .build();
+
+        SiteObject siteObject = siteMapper.toSiteObject(site);
+       
+        assertEquals("kuzmich", siteObject.getName());
+        assertEquals("kuzmich.com", siteObject.getUrl());
+        
+    }
 }

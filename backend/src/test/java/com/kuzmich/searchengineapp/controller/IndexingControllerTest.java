@@ -1,4 +1,4 @@
-package com.kuzmich.searchengineapp;
+package com.kuzmich.searchengineapp.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,9 +25,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuzmich.searchengineapp.controller.IndexingController;
+import com.kuzmich.searchengineapp.dto.ResultDTO;
 import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.entity.Site;
 import com.kuzmich.searchengineapp.entity.Status;
+import com.kuzmich.searchengineapp.exception.SiteNotSaveException;
 import com.kuzmich.searchengineapp.mapper.SiteMapper;
 import com.kuzmich.searchengineapp.repository.SiteRepository;
 import com.kuzmich.searchengineapp.service.IndexingService;
@@ -40,52 +43,38 @@ class IndexingControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SiteRepository siteRepository;
-
-    @MockBean
-    private SiteMapper siteMapper;
-
-
-    @MockBean
     private StatisticsService statisticsService;
+
+    @MockBean
+    private SiteRepository siteRepository;
+    
     @MockBean
     private IndexingService indexingService;
 
-    
-     /*
-        I have the problem with checking which values is returned by controller
-        I always got the exception java.lang.AssertionError: No value at JSON path
+    private SiteObject siteObject;
 
-        The request runninig via the Rest client completes successfully
-    */
+    
+    @BeforeEach
+    void init() {
+        siteObject = SiteObject.builder()
+            .name("name")
+            .url("url")
+       .build();
+    }
+  
     @Test
     void addSite_successCase() throws Exception {
-        SiteObject siteObject = new SiteObject("url", "name");
-        Site siteAfterMapper = Site.builder()
-            .status(Status.NEW)
-            .url("url")
-            .name("name")
-        .build();   
-        Site siteEntity = Site.builder()
-            .id(1)
-            .status(Status.NEW)
-            .url("url")
-            .name("name")    
-        .build(); 
-    
-        when(siteMapper.toSite(any(SiteObject.class))).thenReturn(siteAfterMapper);
-        when(siteRepository.save(any(Site.class))).thenReturn(siteEntity);
+           
+        when(indexingService.saveSite(any(SiteObject.class))).thenReturn(new ResultDTO(true));
         
         mockMvc
             .perform(
                 post("/addSite")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(toJsonString(siteObject)))                    
-            .andExpect(status().isOk());
-    }
-
-   
-       
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.result").value(true));
+    }      
 
 
     private String toJsonString(final Object object) {

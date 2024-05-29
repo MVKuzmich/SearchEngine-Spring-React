@@ -4,7 +4,6 @@ import com.kuzmich.searchengineapp.action.Lemmatizator;
 import com.kuzmich.searchengineapp.action.SitesConcurrencyIndexingExecutor;
 import com.kuzmich.searchengineapp.action.WebSiteAnalyzer;
 import com.kuzmich.searchengineapp.config.SiteConfig;
-import com.kuzmich.searchengineapp.dto.ListItemsDto;
 import com.kuzmich.searchengineapp.dto.ResultDTO;
 import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.entity.*;
