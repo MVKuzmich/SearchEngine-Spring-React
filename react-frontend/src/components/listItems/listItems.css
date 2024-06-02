@@ -1,0 +1,12 @@
+.list-items{
+    font-size: 10px;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 5px;
+    
+}
+
+.item-index {
+    margin-right: 5px;
+}

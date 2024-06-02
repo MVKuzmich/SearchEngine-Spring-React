@@ -1,8 +1,11 @@
 import {useState, useEffect} from "react";
-import useSearchEngineService from "../services/SearchEngineService";
-import useInterval from "../hooks/setInterval.hook";
-import ListItems from "../components/listItems/ListItems";
-import SiteItem from "../components/siteItem/SiteItem";
+import useSearchEngineService from "../../services/SearchEngineService";
+import useInterval from "../../hooks/setInterval.hook";
+import ListItems from "../listItems/ListItems";
+import SiteItem from "../siteItem/SiteItem";
+import { Button, Badge } from 'react-bootstrap'
+import './management.css';
+
 
 const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
 
@@ -79,7 +82,6 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
                 setUrl("");
                 setSubmitMessage("Your site has been added succesfully!");
                 handleSiteGetting();
-
             } else {
                 setSubmitMessage(res.error);
             }
@@ -98,21 +100,26 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
 
 
     return (
-        <div className="ManagementTab">
-            <p>Management</p>
-            
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="fname">Add Site Name: {' '}
-                    <input type="text" id="siteName" placeholder="Enter site name" name="name" value={name} onChange={handleNameChange}/>
-                </label><br/>
-                <label htmlFor="fname">Add Site Url: {' '}
-                    <input type="text" id="siteUrl" placeholder="Enter site domain url" name="url" value={url} onChange={handleUrlChange}/>
-                </label><br/>
-                {messageVisible && <p className="msg">{submitMessage}</p>}
-                <button type="submit" onSubmit={handleSubmit}>Save site!</button>
+        <div>
+            <p>
+                <Badge bg="secondary">Indexation Management</Badge>
+            </p>
+            <span>Add site: </span>
+            <form className="site-form" onSubmit={handleSubmit}>
+                <div>
+                    <label className="label" htmlFor="fname">Site Name: {' '}
+                        <input type="text" id="siteName" placeholder="Enter site name" name="name" value={name} onChange={handleNameChange}/>
+                    </label><br/>
+                    <label className="label" htmlFor="fname">Site Domain: {' '}
+                        <input type="text" id="siteUrl" placeholder="Enter site domain url" name="url" value={url} onChange={handleUrlChange}/>
+                    </label><br/>
+                    {messageVisible && <p className="msg">{submitMessage}</p>}
+                </div>
+                <Button type="submit" onSubmit={handleSubmit}>Save site!</Button>
             </form>
-            <button type="button" onClick={() => toggleIndexing(isIndexing)}>{isIndexing ? 'Stop' : 'Start'} Indexation</button>
             {siteList.length > 0 ? <ListItems listItems={siteList} Component = {SiteItem} /> : <p>Any site was not added</p>}
+            <Button type="button" onClick={() => toggleIndexing(isIndexing)}>{isIndexing ? 'Stop' : 'Start'} Indexation</Button>
+            
         </div>
     );
 }

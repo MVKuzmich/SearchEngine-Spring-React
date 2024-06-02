@@ -1,10 +1,10 @@
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import { useCallback, useState } from 'react';
-import './pages/tabs.css';
-import DashboardPage from "./pages/DashboardPage";
-import ManagementPage from './pages/ManagementPage';
-import SearchPage from './pages/SearchPage';
-import Navbar from './components/navbar/Navbar';
+import DashboardPage from "./components/dashboard/DashboardPage";
+import ManagementPage from './components/management/ManagementPage';
+import SearchPage from './components/search/SearchPage';
+import {Container, Row, Col} from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './app.css';
 
 function App() {
 
@@ -25,19 +25,21 @@ function App() {
 
   
   return (
-    <>ss
-        <Router>
-            <Navbar/>
-            <Routes>
-                <Route path="/" element={<><h1>my app</h1></>}/>
-                <Route path="/dashboard" element={<DashboardPage  data={data} onDataLoaded={onDataLoaded}/>}/>
-                <Route path="/management" element={<ManagementPage isIndexing={isIndexing} setIsIndexing={setIsIndexing} onDataLoaded={onDataLoaded}/>}/>
-                <Route path="/search" element={<SearchPage/>}/>
-            </Routes>
-        </Router>
-    
-    </>   
-
+    <Container>
+        <Row>
+          <Col>
+            <DashboardPage data={data} onDataLoaded={onDataLoaded}/>
+          </Col>
+          <Col>
+            <ManagementPage isIndexing={isIndexing} setIsIndexing={setIsIndexing} onDataLoaded={onDataLoaded}/>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <SearchPage/>
+          </Col>
+        </Row>
+      </Container>
   );
 }
 

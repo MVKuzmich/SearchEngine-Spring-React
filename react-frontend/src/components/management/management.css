@@ -1,0 +1,22 @@
+.label {
+    font-size: 22.5px;
+}
+
+.site-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.site-form>div {
+    margin-right: 20px; 
+}
+
+.label>input {
+    border-color: aqua;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.94);
+}
+.label>input:focus {
+    background-color:darkgray;
+}
