@@ -1,11 +1,12 @@
 import {useEffect} from "react";
 import useSearchEngineService from "../../services/SearchEngineService";
-import {Container, Stack, Badge} from 'react-bootstrap';
+import {Container, Stack, Badge, Spinner} from 'react-bootstrap';
 import './dashboard.css';
+import ErrorMessage from "../errorMessage/ErrorMessage";
 
 const DashboardPage = ({data, onDataLoaded}) => {
     
-    const {getStatistics} = useSearchEngineService();
+    const {getStatistics, loading, error} = useSearchEngineService();
     
     const getData = () => {
         console.log('getData Dashboard');
@@ -19,12 +20,12 @@ const DashboardPage = ({data, onDataLoaded}) => {
     }, []);
 
     const {siteCount, pageCount, lemmaCount} = data;
-    return (
-        <Container>
+    return (error) ? (<ErrorMessage/>) : 
+        (<Container>
             <p>
                 <Badge bg="secondary">Site Indexation Dashboard</Badge>
             </p>
-            <Stack direction="horizontal" gap={3} >
+            {loading ? <Spinner/> : <Stack direction="horizontal" gap={3} >
                 <Stack className="stat"  direction="vertical" gap={0}>
                     <div>
                         <Badge>Sites</Badge>
@@ -44,9 +45,9 @@ const DashboardPage = ({data, onDataLoaded}) => {
                     <div>{lemmaCount}</div>
                 </Stack>
             </Stack>
+            }
         </Container>
-                        
-    );
+        );
 }
 
 export default DashboardPage;

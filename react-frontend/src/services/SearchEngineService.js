@@ -15,28 +15,37 @@ const useSearchEngineService = () => {
     }
 
     const startIndexing = async () => {
+        clearError();
         const res = await request("http://localhost:8080/startIndexing");
         
         return res;
     }
 
     const stopIndexing = async () => {
+        clearError();
         const res = await request("http://localhost:8080/stopIndexing");
         
         return res;
     }
 
     const addSite = async (data) => {
+        clearError();
         const res = await request("http://localhost:8080/addSite", 'POST', data);
         return res;
     }
 
     const getSites = async () => {
+        clearError();
         const res = await request("http://localhost:8080/sites");
         return res;
     }
+    const deleteSite = async (data) => {
+        clearError();
+        const res = await request("http://localhost:8080/deleteSite", 'POST', data);
+        return res;
+    }
 
-    return {getStatistics, startIndexing, stopIndexing, addSite, getSites};
+    return {getStatistics, startIndexing, stopIndexing, addSite, getSites, deleteSite, loading, error};
     
 }
 

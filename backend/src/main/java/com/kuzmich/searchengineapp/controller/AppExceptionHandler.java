@@ -4,6 +4,7 @@ import com.kuzmich.searchengineapp.dto.ResultDTO;
 import com.kuzmich.searchengineapp.exception.EmptySearchQueryException;
 import com.kuzmich.searchengineapp.exception.IndexExecutionException;
 import com.kuzmich.searchengineapp.exception.IndexInterruptedException;
+import com.kuzmich.searchengineapp.exception.SiteNotFoundException;
 import com.kuzmich.searchengineapp.exception.SiteNotSaveException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,4 +44,13 @@ public class AppExceptionHandler {
         log.info("inside exception handler");
         return new ResultDTO(false, ex.getMessage()); 
     }
+
+    @ExceptionHandler({SiteNotFoundException.class})
+    @ResponseBody
+    public ResultDTO handleSiteNotFoundException(SiteNotFoundException ex) {
+        log.info("inside exception handler");
+        return new ResultDTO(false, ex.getMessage()); 
+    }
+
+
 }

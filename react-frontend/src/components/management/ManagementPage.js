@@ -3,7 +3,8 @@ import useSearchEngineService from "../../services/SearchEngineService";
 import useInterval from "../../hooks/setInterval.hook";
 import ListItems from "../listItems/ListItems";
 import SiteItem from "../siteItem/SiteItem";
-import { Button, Badge } from 'react-bootstrap'
+import { Button, Badge, Spinner } from 'react-bootstrap';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 import './management.css';
 
 
@@ -15,7 +16,7 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
     const [messageVisible, setMessageVisible] = useState(false);
     const [siteList, setSiteList] = useState([]);
 
-    const { getStatistics, startIndexing, stopIndexing, addSite, getSites } = useSearchEngineService();
+    const { getStatistics, startIndexing, stopIndexing, addSite, getSites, deleteSite, loading, error} = useSearchEngineService();
 
     const getData = () => {
         console.log('getData Dashboard');
@@ -28,7 +29,7 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
     }, 10000, isIndexing);
 
     useEffect(() => {
-        handleSiteGetting()  
+        handleSitesGetting()  
     }, []);
 
 
@@ -49,7 +50,7 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
                 console.log(isIndexing);
             } else {
                 stopIndexing().then((res) => setIsIndexing((prevIsIndexing) => res.isIndexing));
-                console.log(isIndexing); // Проверьте, вернулся ли нужный флаг для обновления состояния
+                console.log(isIndexing);
             }
             
         } catch (error) {
@@ -69,7 +70,7 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
         }, 5000);
     }
 
-    const handleSiteGetting = () => {
+    const handleSitesGetting = () => {
         getSites().then((res) => setSiteList(res));
     };   
 
@@ -81,7 +82,7 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
                 setName("");
                 setUrl("");
                 setSubmitMessage("Your site has been added succesfully!");
-                handleSiteGetting();
+                handleSitesGetting();
             } else {
                 setSubmitMessage(res.error);
             }
@@ -98,6 +99,11 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
         setName(event.target.value);
       }
 
+      const content = () => {
+        return (siteList.length > 0) 
+            ? <ListItems listItems={siteList} Component = {SiteItem} deleteItem={deleteSite} handleItemsGetting={handleSitesGetting}/>
+            : <p>Any site was not added</p>;       
+    }
 
     return (
         <div>
@@ -117,9 +123,9 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
                 </div>
                 <Button type="submit" onSubmit={handleSubmit}>Save site!</Button>
             </form>
-            {siteList.length > 0 ? <ListItems listItems={siteList} Component = {SiteItem} /> : <p>Any site was not added</p>}
-            <Button type="button" onClick={() => toggleIndexing(isIndexing)}>{isIndexing ? 'Stop' : 'Start'} Indexation</Button>
-            
+            {loading ? <Spinner/> : content()}
+            {error ? <ErrorMessage/> : null}
+            <Button type="button" onClick={() => toggleIndexing(isIndexing)}>{isIndexing ? 'Stop' : 'Start'} Indexation</Button>    
         </div>
     );
 }

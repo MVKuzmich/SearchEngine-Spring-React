@@ -2,13 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./listItems.css";
 
-const ListItems = ({ listItems, Component }) => {
+const ListItems = ({ listItems, Component, deleteItem = () => {}, handleItemsGetting = () => {} }) => {
   return listItems.map((item, index) => {
     return (
       <div className="list-items" key={index}>
         <span className="item-index">{index + 1}{'. '}</span>{' '}
         <span className="list-items">
-          <Component item = {item} />{' '}
+          <Component item = {item} deleteItem={deleteItem} handleItemsGetting={handleItemsGetting}/>{' '}
         </span>
       </div>     
     );

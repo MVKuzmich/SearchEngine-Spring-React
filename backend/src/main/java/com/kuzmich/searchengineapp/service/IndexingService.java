@@ -9,6 +9,7 @@ import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.entity.*;
 import com.kuzmich.searchengineapp.exception.IndexExecutionException;
 import com.kuzmich.searchengineapp.exception.IndexInterruptedException;
+import com.kuzmich.searchengineapp.exception.SiteNotFoundException;
 import com.kuzmich.searchengineapp.exception.SiteNotSaveException;
 import com.kuzmich.searchengineapp.mapper.SiteMapper;
 import com.kuzmich.searchengineapp.repository.*;
@@ -120,6 +121,16 @@ public class IndexingService {
                     .stream()
                     .map(siteMapper::toSiteObject)
                     .collect(Collectors.toList());
+    }
+
+    public ResultDTO deleteSite(SiteObject site) {
+        Optional<Site> siteOptional = siteRepository.findSiteByUrl(site.getUrl());
+        if(siteOptional.isEmpty()) {
+            throw new SiteNotFoundException(String.format("The site %s is not found", site.getUrl()));
+        }
+        siteRepository.delete(siteOptional.get());
+        
+        return new ResultDTO(true);
     }
 
     private void updateSiteStatus(String message) {

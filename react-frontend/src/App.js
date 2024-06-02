@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import DashboardPage from "./components/dashboard/DashboardPage";
 import ManagementPage from './components/management/ManagementPage';
 import SearchPage from './components/search/SearchPage';
-import {Container, Row, Col} from 'react-bootstrap';
+import {Container, Row, Col, Spinner} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
@@ -14,7 +14,6 @@ function App() {
   const [lemmaCount, setLemmaCount] = useState(0);
 
   const data= {siteCount, pageCount, lemmaCount};
-
   
   const onDataLoaded = useCallback((data) => {
     console.log('onDataLoaded Dashboard');

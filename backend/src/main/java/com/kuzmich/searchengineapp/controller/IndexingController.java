@@ -52,6 +52,13 @@ public class IndexingController {
 
     }
 
+    @PostMapping("/deleteSite") 
+    public ResultDTO deleteSite(@RequestBody SiteObject site) {
+        
+        return indexingService.deleteSite(site);
+    }
+    
+
     @GetMapping("/sites")
     public List<SiteObject> getSites() {
         return indexingService.getSites();
