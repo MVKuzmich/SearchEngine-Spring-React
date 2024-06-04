@@ -3,7 +3,7 @@ package com.kuzmich.searchengineapp.controller;
 import com.kuzmich.searchengineapp.dto.ResultDTO;
 import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.dto.statistics.Result;
-
+import com.kuzmich.searchengineapp.entity.Status;
 import com.kuzmich.searchengineapp.service.IndexingService;
 import com.kuzmich.searchengineapp.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
@@ -33,38 +33,38 @@ public class IndexingController {
         return statisticsService.getStatisticInformation();
     }
 
-    @GetMapping("/startIndexing")
+    @GetMapping("/start-indexation")
     public ResultDTO startIndexing(String url) {
         indexingService.executeIndexation(url);
         return new ResultDTO(true);
     }
 
-    @GetMapping("/stopIndexing")
+    @GetMapping("/stop-indexation")
     public ResultDTO stopIndexing() {
         log.info("ОСТАНОВКА ИНДЕКСАЦИИ - ОСТАНОВКА ИНДЕКСАЦИИ - ОСТАНОВКА ИНДЕКСАЦИИ");
         return indexingService.stopIndexation();
     }
 
-    @PostMapping("/addSite")
+    @PostMapping("/add-site")
     public ResultDTO addSite(@RequestBody SiteObject siteObject) {
 
         return indexingService.saveSite(siteObject);
 
     }
 
-    @PostMapping("/deleteSite") 
+    @PostMapping("/delete-site") 
     public ResultDTO deleteSite(@RequestBody SiteObject site) {
         
         return indexingService.deleteSite(site);
     }
     
 
-    @GetMapping("/sites")
-    public List<SiteObject> getSites() {
-        return indexingService.getSites();
+    @GetMapping("/new-sites")
+    public List<SiteObject> getNewAddedSites() {
+        return indexingService.getSitesByStatus(Status.NEW);
     }
 
-    @PostMapping("/indexPage")
+    @PostMapping("/index-page")
     public ResultDTO executePageIndexing(@RequestParam("url") String url) {
         return indexingService.executePageIndexation(url);
     }

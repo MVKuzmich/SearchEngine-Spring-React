@@ -16,32 +16,32 @@ const useSearchEngineService = () => {
 
     const startIndexing = async () => {
         clearError();
-        const res = await request("http://localhost:8080/startIndexing");
+        const res = await request("http://localhost:8080/start-indexation");
         
         return res;
     }
 
     const stopIndexing = async () => {
         clearError();
-        const res = await request("http://localhost:8080/stopIndexing");
+        const res = await request("http://localhost:8080/stop-indexation");
         
         return res;
     }
 
     const addSite = async (data) => {
         clearError();
-        const res = await request("http://localhost:8080/addSite", 'POST', data);
+        const res = await request("http://localhost:8080/add-site", 'POST', data);
         return res;
     }
 
     const getSites = async () => {
         clearError();
-        const res = await request("http://localhost:8080/sites");
+        const res = await request("http://localhost:8080/new-sites");
         return res;
     }
     const deleteSite = async (data) => {
         clearError();
-        const res = await request("http://localhost:8080/deleteSite", 'POST', data);
+        const res = await request("http://localhost:8080/delete-site", 'POST', data);
         return res;
     }
 

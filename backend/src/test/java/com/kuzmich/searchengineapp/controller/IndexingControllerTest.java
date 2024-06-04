@@ -1,36 +1,23 @@
 package com.kuzmich.searchengineapp.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kuzmich.searchengineapp.controller.IndexingController;
 import com.kuzmich.searchengineapp.dto.ResultDTO;
 import com.kuzmich.searchengineapp.dto.SiteObject;
-import com.kuzmich.searchengineapp.entity.Site;
-import com.kuzmich.searchengineapp.entity.Status;
-import com.kuzmich.searchengineapp.exception.SiteNotSaveException;
-import com.kuzmich.searchengineapp.mapper.SiteMapper;
 import com.kuzmich.searchengineapp.repository.SiteRepository;
 import com.kuzmich.searchengineapp.service.IndexingService;
 import com.kuzmich.searchengineapp.service.StatisticsService;

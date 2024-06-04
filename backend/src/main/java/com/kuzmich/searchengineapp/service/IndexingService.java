@@ -123,6 +123,13 @@ public class IndexingService {
                     .collect(Collectors.toList());
     }
 
+    public List<SiteObject> getSitesByStatus(Status statusName) {
+        return siteRepository.findAllByStatus(statusName).stream()
+                    .map(siteMapper::toSiteObject)
+                    .toList();
+    }
+
+
     public ResultDTO deleteSite(SiteObject site) {
         Optional<Site> siteOptional = siteRepository.findSiteByUrl(site.getUrl());
         if(siteOptional.isEmpty()) {
