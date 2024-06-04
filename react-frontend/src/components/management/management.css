@@ -4,12 +4,13 @@
 
 .site-form {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
 }
 
+
 .site-form>div {
-    margin-right: 20px; 
+    flex-grow: 1;
 }
 
 .label>input {
@@ -19,4 +20,33 @@
 }
 .label>input:focus {
     background-color:darkgray;
+}
+
+.container {
+    position:relative;
+}
+
+.content {
+    margin-bottom: 50px;
+}
+
+.indexation-btn {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.save-btn-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.msg {
+    position: absolute;
+    bottom: -10px; 
+    left: 100px;
+    width: 100%;
+    font-size: 10px;
+    color: brown;
 }

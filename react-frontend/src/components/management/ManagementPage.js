@@ -106,26 +106,30 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
     }
 
     return (
-        <div>
-            <p>
+        <div className="container">
+            <div className="content">
+                <p>
                 <Badge bg="secondary">Indexation Management</Badge>
-            </p>
-            <span>Add site: </span>
-            <form className="site-form" onSubmit={handleSubmit}>
-                <div>
-                    <label className="label" htmlFor="fname">Site Name: {' '}
-                        <input type="text" id="siteName" placeholder="Enter site name" name="name" value={name} onChange={handleNameChange}/>
-                    </label><br/>
-                    <label className="label" htmlFor="fname">Site Domain: {' '}
-                        <input type="text" id="siteUrl" placeholder="Enter site domain url" name="url" value={url} onChange={handleUrlChange}/>
-                    </label><br/>
-                    {messageVisible && <p className="msg">{submitMessage}</p>}
-                </div>
-                <Button type="submit" onSubmit={handleSubmit}>Save site!</Button>
-            </form>
-            {loading ? <Spinner/> : content()}
-            {error ? <ErrorMessage/> : null}
-            <Button type="button" onClick={() => toggleIndexing(isIndexing)}>{isIndexing ? 'Stop' : 'Start'} Indexation</Button>    
+                </p>
+                <span>Add site: </span>
+                <form className="site-form" onSubmit={handleSubmit}>
+                    <div>
+                        <label className="label" htmlFor="fname">Site Name: {' '}
+                            <input type="text" id="siteName" placeholder="Enter site name" name="name" value={name} onChange={handleNameChange}/>
+                        </label><br/>
+                        <label className="label" htmlFor="fname">Site Domain: {' '}
+                            <input type="text" id="siteUrl" placeholder="Enter site domain url" name="url" value={url} onChange={handleUrlChange}/>
+                        </label><br/>
+                    </div>
+                    <div className="save-btn-wrapper">
+                        <Button className="save-btn" type="submit" onSubmit={handleSubmit}>Save site!</Button>
+                        {messageVisible && <p className="msg">{submitMessage}</p>}
+                    </div>
+                </form>
+                {loading ? <Spinner/> : content()}
+                {error ? <ErrorMessage/> : null}  
+            </div>
+            <Button className="indexation-btn" type="button" onClick={() => toggleIndexing(isIndexing)}>{isIndexing ? 'Stop' : 'Start'} Indexation</Button>    
         </div>
     );
 }
