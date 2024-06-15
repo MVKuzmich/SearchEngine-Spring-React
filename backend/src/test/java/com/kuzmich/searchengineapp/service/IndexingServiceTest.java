@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,19 +42,15 @@ class IndexingServiceTest {
     @InjectMocks
     private IndexingService indexingService;
 
-    @Test
-    void throwExceptionIfSaveSite() {
-        SiteObject siteObject = SiteObject.builder()
-                .name("name")
-                .url("url")
-                .build();
+    private SiteObject siteObject;
 
-        lenient().when(siteRepository.save(any(Site.class))).thenThrow(new RuntimeException("Test exception"));
-
-        Exception exception = assertThrows(SiteNotSaveException.class, () -> indexingService.saveSite(siteObject));
-        assertEquals("The site info is not saved for server causes! Try it later!", exception.getMessage());
-
-        verify(siteRepository, never()).save(any(Site.class));
+    @BeforeEach
+    void init() {
+        siteObject = SiteObject.builder()
+            .name("name")
+            .url("url")
+            .build();
+                
     }
 
     @Test
@@ -64,31 +61,37 @@ class IndexingServiceTest {
                 .url("url")
                 .build();
         doReturn(site).when(siteRepository).save(any(Site.class));
-
         when(siteMapper.toSite(any(SiteObject.class))).thenCallRealMethod();
-
-        ResultDTO dto = indexingService.saveSite(
-                SiteObject.builder()
-                        .name("name")
-                        .url("url")
-                        .build());
+        
+        ResultDTO dto = indexingService.saveSite(siteObject);
+        
         assertTrue(dto.isResult());
         assertNull(dto.getError());
     }
 
     @Test
     void saveSite_throwException() {
+        doThrow(new IllegalArgumentException("Test exception")).when(siteRepository).save(any(Site.class));
         when(siteMapper.toSite(any(SiteObject.class))).thenCallRealMethod();
-        doThrow(new RuntimeException("Test exception")).when(siteRepository).save(any(Site.class));
+        
+        SiteNotSaveException exception = assertThrows(SiteNotSaveException.class,
+                () -> indexingService.saveSite(siteObject));
+
+        assertEquals("We have server problems, try it later!", exception.getMessage());
+        assertEquals("Test exception", exception.getCause().getMessage());
+        
+    }
+
+    @Test
+    void saveSite_throwException_urlNotUnique() {
+        doReturn(2L).when(siteRepository).countByUrl(any());
 
         SiteNotSaveException exception = assertThrows(SiteNotSaveException.class,
-                () -> indexingService.saveSite(SiteObject.builder()
-                        .name("name")
-                        .url("url")
-                        .build()));
+                () -> indexingService.saveSite(siteObject));
 
-        assertEquals("The site info is not saved for server causes! Try it later!", exception.getMessage());
-        assertEquals("Test exception", exception.getCause().getMessage());
+        assertEquals("Such an url has already existed", exception.getMessage());
+        verify(siteRepository, never()).save(any(Site.class));
+
     }
 
     @Test
@@ -102,8 +105,10 @@ class IndexingServiceTest {
         doReturn(List.of(site)).when(siteRepository).findAll();
         when(siteMapper.toSiteObject(any(Site.class))).thenCallRealMethod();
 
-        assertEquals(1, indexingService.getSites().size());
-        assertEquals("name", indexingService.getSites().get(0).getName());
-        assertEquals("url", indexingService.getSites().get(0).getUrl());
+        List<SiteObject> sites = indexingService.getSites();
+
+        assertEquals(1, sites.size());
+        assertEquals("name", sites.get(0).getName());
+        assertEquals("url", sites.get(0).getUrl());
     }
 }

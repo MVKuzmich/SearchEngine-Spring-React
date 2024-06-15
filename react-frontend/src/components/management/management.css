@@ -1,11 +1,12 @@
 .label {
     font-size: 22.5px;
+    position:relative;
 }
 
 .site-form {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
 }
 
 
@@ -38,8 +39,8 @@
 }
 
 .save-btn-wrapper {
-    position: relative;
-    display: inline-flex;
+    margin-bottom: 36px;
+    margin-top: 10px;
 }
 
 .msg {
@@ -49,4 +50,15 @@
     width: 100%;
     font-size: 10px;
     color: brown;
+}
+
+.error-message {
+    font-size: 20px;
+    color: brown;
+    position: absolute;
+    bottom: 0px; /* Adjust this value to position the error message under the button */
+    left: 350px;
+    width: 100%;
+
+    
 }

@@ -8,11 +8,6 @@ public class SiteNotSaveException extends RuntimeException {
 
     public SiteNotSaveException (String message) {
         super(message);
-    } 
-
-
-
-
-
-    
+    }
+        
 }

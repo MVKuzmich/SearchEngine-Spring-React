@@ -21,7 +21,9 @@ logging:
 
 spring:
   jpa:
+    open-in-view: false
     hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
       ddl-auto: update
     properties:
       hibernate:
@@ -35,11 +37,11 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/changeset/db.changelog-master.xml
-  thymeleaf:
-    prefix: classpath:/templates/
-  web:
-    resources:
-      static-locations: classpath:/static/
+  # thymeleaf:
+  #   prefix: classpath:/templates/
+  # web:
+  #   resources:
+  #     static-locations: classpath:/static/
 
 
     #    - url: http://www.playback.ru

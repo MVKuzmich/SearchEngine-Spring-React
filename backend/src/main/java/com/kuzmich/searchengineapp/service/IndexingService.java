@@ -13,9 +13,12 @@ import com.kuzmich.searchengineapp.exception.SiteNotFoundException;
 import com.kuzmich.searchengineapp.exception.SiteNotSaveException;
 import com.kuzmich.searchengineapp.mapper.SiteMapper;
 import com.kuzmich.searchengineapp.repository.*;
+
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -108,11 +111,17 @@ public class IndexingService {
 
     public ResultDTO saveSite(SiteObject site) throws SiteNotSaveException {
         try {
+            if(siteRepository.countByUrl(site.getUrl()) >= 1) {
+                throw new SiteNotSaveException("Such an url has already existed");
+            }
+            
             Site siteEntity = siteMapper.toSite(site);
             siteRepository.save(siteEntity);            
+            
             return new ResultDTO(true);
-        } catch(Exception ex) {
-            throw new SiteNotSaveException("The site info is not saved for server causes! Try it later!", ex);
+
+        } catch (IllegalArgumentException | OptimisticLockingFailureException | InternalError ex) {
+            throw new SiteNotSaveException("We have server problems, try it later!", ex);
         }       
     }
 

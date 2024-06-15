@@ -1,0 +1,1 @@
+INSERT INTO site (id, last_error, status, status_time, name, url) VALUES (2, '', 'INDEXED', 456, 'name', 'url.com');

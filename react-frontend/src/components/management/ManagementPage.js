@@ -15,6 +15,10 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
     const [submitMessage, setSubmitMessage] = useState("");
     const [messageVisible, setMessageVisible] = useState(false);
     const [siteList, setSiteList] = useState([]);
+    const [urlError, setUrlError] = useState(false);
+    const [prevUrl, setPrevUrl] = useState("");
+    const [isValidUrl, setIsValidUrl] = useState(false);
+
 
     const { getStatistics, startIndexing, stopIndexing, addSite, getSites, deleteSite, loading, error} = useSearchEngineService();
 
@@ -76,9 +80,9 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const res = addSite(JSON.stringify(site)).then(
-            () => {
-                if(res) {
+        addSite(JSON.stringify(site)).then(
+            (res) => {
+                if(res.result) {
                 setName("");
                 setUrl("");
                 setSubmitMessage("Your site has been added succesfully!");
@@ -89,11 +93,32 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
         handleMessageVisibility();
         });  
       }
-        
+      const pattern = /^(https?:\/\/)?(www\.)?([a-z0-9]+(?:[\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?)$/; 
     
       const handleUrlChange = (event) => {
-        setUrl(event.target.value);
+        const value = event.target.value;
+
+        const isValid = pattern.test(value);
+
+        setUrl(value);
+        setPrevUrl(value);
+        setUrlError(!isValid);
+        setIsValidUrl(isValid);
       }
+
+      const handleUrlBlur = () => {
+        setPrevUrl(url);
+        setUrlError(false);
+      };
+
+      const handleUrlFocus = () => {
+        const isDifferent = url === prevUrl;
+        const isValid = pattern.test(url);
+    
+        if (isDifferent) {
+          setUrlError(!isValid);
+        }
+      };
 
       const handleNameChange = (event) => {
         setName(event.target.value);
@@ -114,16 +139,22 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
                 <span>Add site: </span>
                 <form className="site-form" onSubmit={handleSubmit}>
                     <div>
-                        <label className="label" htmlFor="fname">Site Name: {' '}
+                        <label className="label" htmlFor="siteName">Site Name: {' '}
                             <input type="text" id="siteName" placeholder="Enter site name" name="name" value={name} onChange={handleNameChange}/>
                         </label><br/>
-                        <label className="label" htmlFor="fname">Site Domain: {' '}
-                            <input type="text" id="siteUrl" placeholder="Enter site domain url" name="url" value={url} onChange={handleUrlChange}/>
+                        <label className="label" htmlFor="siteUrl">Site Domain: {' '}
+                            <input type="text" id="siteUrl" 
+                                    placeholder="Enter site domain url" 
+                                    name="url" value={url}
+                                    onChange={handleUrlChange}
+                                    onFocus={handleUrlFocus}
+                                    onBlur={handleUrlBlur}/>
+                            {urlError && (<p className="error-message">Please enter a valid URL</p>)}
+                            {messageVisible && <p className="error-message">{submitMessage}</p>}
                         </label><br/>
                     </div>
                     <div className="save-btn-wrapper">
-                        <Button className="save-btn" type="submit" onSubmit={handleSubmit}>Save site!</Button>
-                        {messageVisible && <p className="msg">{submitMessage}</p>}
+                        <Button className="save-btn" type="submit" onSubmit={handleSubmit} disabled={!isValidUrl}>Save site!</Button>
                     </div>
                 </form>
                 {loading ? <Spinner/> : content()}

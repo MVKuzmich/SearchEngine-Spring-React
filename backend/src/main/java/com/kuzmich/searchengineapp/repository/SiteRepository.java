@@ -37,5 +37,7 @@ public interface SiteRepository extends JpaRepository<Site, Integer> {
     void updateSiteStatusAndError(Status status, String error, Integer id);
 
     List<Site> findAllByStatus(Status statusName);
+    
+    long countByUrl(String url);
 
 }

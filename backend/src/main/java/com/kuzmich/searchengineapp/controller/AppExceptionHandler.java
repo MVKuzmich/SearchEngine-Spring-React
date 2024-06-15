@@ -41,16 +41,15 @@ public class AppExceptionHandler {
     @ExceptionHandler({SiteNotSaveException.class})
     @ResponseBody
     public ResultDTO handleSiteNotSaveException(SiteNotSaveException ex) {
-        log.info("inside exception handler");
+        
         return new ResultDTO(false, ex.getMessage()); 
     }
 
     @ExceptionHandler({SiteNotFoundException.class})
     @ResponseBody
     public ResultDTO handleSiteNotFoundException(SiteNotFoundException ex) {
-        log.info("inside exception handler");
+        
         return new ResultDTO(false, ex.getMessage()); 
     }
-
 
 }
