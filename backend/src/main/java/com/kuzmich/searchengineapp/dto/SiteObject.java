@@ -8,5 +8,6 @@ import lombok.Value;
 public class SiteObject {
     String url;
     String name;
+    String hash;
 
 }

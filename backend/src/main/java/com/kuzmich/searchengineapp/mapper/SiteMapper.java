@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.entity.Site;
 import com.kuzmich.searchengineapp.entity.Status;
+import com.kuzmich.searchengineapp.utils.HashGenerator;
 
 @Component
 public class SiteMapper {
@@ -19,6 +20,7 @@ public class SiteMapper {
             .lastError("")
             .url(siteObject.getUrl())
             .name(siteObject.getName())
+            .hash(HashGenerator.generateHash(siteObject.getUrl()))
         .build();
     }
 
@@ -26,6 +28,7 @@ public class SiteMapper {
         return SiteObject.builder()
            .url(site.getUrl())
            .name(site.getName())
+           .hash(site.getHash())
         .build();
     }
 

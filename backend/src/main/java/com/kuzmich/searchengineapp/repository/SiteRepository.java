@@ -1,18 +1,16 @@
 package com.kuzmich.searchengineapp.repository;
 
-import com.kuzmich.searchengineapp.dto.SiteObject;
-import com.kuzmich.searchengineapp.entity.Site;
-import com.kuzmich.searchengineapp.entity.Status;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import com.kuzmich.searchengineapp.entity.Site;
+import com.kuzmich.searchengineapp.entity.Status;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -39,5 +37,7 @@ public interface SiteRepository extends JpaRepository<Site, Integer> {
     List<Site> findAllByStatus(Status statusName);
     
     long countByUrl(String url);
+
+    List<Site> findAllByStatusIsNot(Status status);
 
 }

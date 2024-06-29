@@ -1,22 +1,22 @@
 package com.kuzmich.searchengineapp.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.kuzmich.searchengineapp.dto.ResultDTO;
 import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.dto.statistics.Result;
 import com.kuzmich.searchengineapp.entity.Status;
 import com.kuzmich.searchengineapp.service.IndexingService;
 import com.kuzmich.searchengineapp.service.StatisticsService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.List;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,9 +33,9 @@ public class IndexingController {
         return statisticsService.getStatisticInformation();
     }
 
-    @GetMapping("/start-indexation")
-    public ResultDTO startIndexing(String url) {
-        indexingService.executeIndexation(url);
+    @PostMapping("/start-indexation")
+    public ResultDTO startIndexing(@RequestBody List<SiteObject> sites) {
+        indexingService.startIndexation(sites);
         return new ResultDTO(true);
     }
 
@@ -64,9 +64,9 @@ public class IndexingController {
         return indexingService.getSitesByStatus(Status.NEW);
     }
 
-    @PostMapping("/index-page")
-    public ResultDTO executePageIndexing(@RequestParam("url") String url) {
-        return indexingService.executePageIndexation(url);
-    }
+    // @PostMapping("/index-page")
+    // public ResultDTO executePageIndexing(@RequestParam("url") String url) {
+    //     return indexingService.executePageIndexation(url);
+    // }
 
 }

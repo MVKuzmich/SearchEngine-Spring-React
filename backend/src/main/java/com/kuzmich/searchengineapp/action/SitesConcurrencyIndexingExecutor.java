@@ -1,22 +1,31 @@
 package com.kuzmich.searchengineapp.action;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+
+import org.springframework.stereotype.Component;
+
 import com.kuzmich.searchengineapp.config.SiteConfig;
 import com.kuzmich.searchengineapp.dto.SiteObject;
 import com.kuzmich.searchengineapp.entity.Site;
 import com.kuzmich.searchengineapp.entity.Status;
 import com.kuzmich.searchengineapp.exception.IndexInterruptedException;
-import com.kuzmich.searchengineapp.repository.*;
+import com.kuzmich.searchengineapp.exception.SiteNotFoundException;
+import com.kuzmich.searchengineapp.repository.FieldRepository;
+import com.kuzmich.searchengineapp.repository.IndexRepository;
+import com.kuzmich.searchengineapp.repository.LemmaRepository;
+import com.kuzmich.searchengineapp.repository.PageRepository;
+import com.kuzmich.searchengineapp.repository.SiteRepository;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.*;
 
 @Component
 @RequiredArgsConstructor
@@ -36,28 +45,22 @@ public class SitesConcurrencyIndexingExecutor {
     private boolean isExecuting;
 
     
-    public void executeSitesIndexing(String url) throws IndexInterruptedException {
-
-        List<SiteObject> siteObjects = new ArrayList<>();
-        if(url != null || url != "") {
-            siteObjects.addAll(handleUrls(url));
-        } else {
-            siteObjects = siteConfig.getSiteArray();
-        }
-
-       
+    public void executeSitesIndexing(List<SiteObject> siteObjects) throws IndexInterruptedException {       
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         List<ForkJoinPool> fjPoolList = new ArrayList<>();
         try {
             long start = System.currentTimeMillis() / 1000;
             List<CompletableFuture<Integer>> futureList = new ArrayList<>();
             siteObjects.stream().map(siteObject -> {
-                        Optional<Site> foundSite = siteRepository.findSiteByUrl(siteObject.getUrl());
-                        foundSite.ifPresent(site -> siteRepository.removeSiteById(site.getId()));
+                        Optional<Site> siteOptional = siteRepository.findSiteByUrl(siteObject.getUrl());
+                        if(siteOptional.isEmpty()) {
+                            throw new SiteNotFoundException(String.format("No site was found by url %s", siteObject.getUrl()));
+                        }
+                        Site site = siteOptional.get();
                         WebSiteAnalyzer siteAnalyzer = new WebSiteAnalyzer(pageRepository, lemmaRepository, indexRepository, fieldRepository, siteRepository, siteConfig, lemmatizator);
-                        Site site = getSite(siteObject);
                         siteAnalyzer.setSite(site);
                         siteAnalyzer.setMainPath(site.getUrl());
+                        siteRepository.updateSiteStatus(Status.INDEXING, site.getId());
                         return siteAnalyzer;
                     })
                     .map(siteAnalyzer -> {
@@ -84,22 +87,6 @@ public class SitesConcurrencyIndexingExecutor {
             fjPoolList.clear();
             pool.shutdownNow();
         }
-    }
-
-    private Site getSite(SiteObject siteObject) {
-        Site site = new Site(
-                Status.INDEXING,
-                System.currentTimeMillis(),
-                "",
-                siteObject.getUrl(),
-                siteObject.getName()
-        );
-        return siteRepository.saveAndFlush(site);
-    }
-
-    private List<SiteObject> handleUrls(String url) {
-        
-        return new ArrayList<>();
     }
 }
 

@@ -4,6 +4,8 @@ package com.kuzmich.searchengineapp.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kuzmich.searchengineapp.utils.HashGenerator;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,6 +47,10 @@ public class Site extends BaseEntity {
     private String url;
     @NotNull
     private String name;
+    @NotNull
+    private String hash;
+
+
 
 
     public Site(Status status, long statusTime, String lastError, String url, String name) {
@@ -53,6 +59,7 @@ public class Site extends BaseEntity {
         this.lastError = lastError;
         this.url = url;
         this.name = name;
+        this.hash = HashGenerator.generateHash(url); 
     }
 
     @OneToMany(mappedBy = "site", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

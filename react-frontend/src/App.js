@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import DashboardPage from "./components/dashboard/DashboardPage";
 import ManagementPage from './components/management/ManagementPage';
 import SearchPage from './components/search/SearchPage';
-import {Container, Row, Col, Spinner} from 'react-bootstrap';
+import {Container, Row, Col} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
@@ -20,14 +20,17 @@ function App() {
     setSiteCount(data.siteCount);
     setPageCount(data.pageCount);
     setLemmaCount(data.lemmaCount);
-  }, [data]);
+    if(!data.isIndexingFlag) {
+      setIsIndexing(data.isIndexingFlag)
+    }
+  }, []);
 
   
   return (
     <Container>
         <Row>
           <Col>
-            <DashboardPage data={data} onDataLoaded={onDataLoaded}/>
+            <DashboardPage isIndexing={isIndexing} data={data} onDataLoaded={onDataLoaded}/>
           </Col>
           <Col>
             <ManagementPage isIndexing={isIndexing} setIsIndexing={setIsIndexing} onDataLoaded={onDataLoaded}/>

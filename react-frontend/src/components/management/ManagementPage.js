@@ -1,10 +1,10 @@
-import {useState, useEffect} from "react";
-import useSearchEngineService from "../../services/SearchEngineService";
+import { useCallback, useEffect, useState } from "react";
+import { Badge, Button, Spinner } from 'react-bootstrap';
 import useInterval from "../../hooks/setInterval.hook";
+import useSearchEngineService from "../../services/SearchEngineService";
+import ErrorMessage from '../errorMessage/ErrorMessage';
 import ListItems from "../listItems/ListItems";
 import SiteItem from "../siteItem/SiteItem";
-import { Button, Badge, Spinner } from 'react-bootstrap';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import './management.css';
 
 
@@ -14,13 +14,14 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
     const [url, setUrl] = useState("");
     const [submitMessage, setSubmitMessage] = useState("");
     const [messageVisible, setMessageVisible] = useState(false);
-    const [siteList, setSiteList] = useState([]);
+    const [newSiteList, setNewSiteList] = useState([]);
     const [urlError, setUrlError] = useState(false);
     const [prevUrl, setPrevUrl] = useState("");
     const [isValidUrl, setIsValidUrl] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
 
 
-    const { getStatistics, startIndexing, stopIndexing, addSite, getSites, deleteSite, loading, error} = useSearchEngineService();
+    const { getStatistics, startIndexing, stopIndexing, addSite, getNewSites, deleteSite, loading, error} = useSearchEngineService();
 
     const getData = () => {
         console.log('getData Dashboard');
@@ -50,10 +51,11 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
     const toggleIndexing = () => {
         try {
             if(!isIndexing) {
-                startIndexing().then((res) => setIsIndexing((prevIsIndexing) => res.isIndexing));
+                startIndexing(JSON.stringify(selectedItems)).then((res) => setIsIndexing((prevIsIndexing) => res.result));
+                setNewSiteList([]);
                 console.log(isIndexing);
             } else {
-                stopIndexing().then((res) => setIsIndexing((prevIsIndexing) => res.isIndexing));
+                stopIndexing().then((res) => setIsIndexing((prevIsIndexing) => res.result));
                 console.log(isIndexing);
             }
             
@@ -74,9 +76,9 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
         }, 5000);
     }
 
-    const handleSitesGetting = () => {
-        getSites().then((res) => setSiteList(res));
-    };   
+    const handleSitesGetting = useCallback(() => {
+        getNewSites().then((res) => setNewSiteList(res));
+    }, [getNewSites]);   
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -86,6 +88,7 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
                 setName("");
                 setUrl("");
                 setSubmitMessage("Your site has been added succesfully!");
+                setIsValidUrl(false);
                 handleSitesGetting();
             } else {
                 setSubmitMessage(res.error);
@@ -125,10 +128,17 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
       }
 
       const content = () => {
-        return (siteList.length > 0) 
-            ? <ListItems listItems={siteList} Component = {SiteItem} deleteItem={deleteSite} handleItemsGetting={handleSitesGetting}/>
-            : <p>Any site was not added</p>;       
-    }
+        return (newSiteList.length > 0) 
+            ? <ListItems 
+                listItems={newSiteList} 
+                Component = {SiteItem}
+                deleteItem={deleteSite}
+                handleItemsGetting={handleSitesGetting}
+                selectedItems={selectedItems}
+                setSelectedItems={setSelectedItems}
+            />
+            : <p className="no-site-msg">Any site was not added</p>;       
+        }
 
     return (
         <div className="container">
@@ -160,7 +170,7 @@ const ManagementPage = ({isIndexing, setIsIndexing, onDataLoaded}) => {
                 {loading ? <Spinner/> : content()}
                 {error ? <ErrorMessage/> : null}  
             </div>
-            <Button className="indexation-btn" type="button" onClick={() => toggleIndexing(isIndexing)}>{isIndexing ? 'Stop' : 'Start'} Indexation</Button>    
+            <Button className="indexation-btn" type="button" onClick={() => toggleIndexing(isIndexing)} disabled={selectedItems.length === 0}>{isIndexing ? 'Stop' : 'Start'} Indexation</Button>    
         </div>
     );
 }

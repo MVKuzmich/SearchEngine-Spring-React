@@ -28,7 +28,7 @@ public class StatisticsService {
 
 
     public Result getStatisticInformation() {
-        List<Site> siteList = siteRepository.findAllByStatus(Status.INDEXED);
+        List<Site> siteList = siteRepository.findAllByStatusIsNot(Status.NEW);
         return Result
                 .builder()
                 .result(true)
@@ -64,6 +64,7 @@ public class StatisticsService {
         return Detailed.builder()
                 .url(site.getUrl())
                 .name(site.getName())
+                .hash(site.getHash())
                 .status(site.getStatus())
                 .statusTime(site.getStatusTime())
                 .error(site.getLastError())

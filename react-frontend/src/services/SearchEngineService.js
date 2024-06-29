@@ -10,13 +10,14 @@ const useSearchEngineService = () => {
         const pageCount = res.statistics.total.pages;
         const lemmaCount = res.statistics.total.lemmas;
         const isIndexingFlag = res.statistics.total.isIndexing;
+        const sites = res.statistics.detailed;
 
-        return {siteCount, pageCount, lemmaCount, isIndexingFlag};
+        return {siteCount, pageCount, lemmaCount, isIndexingFlag, sites};
     }
 
-    const startIndexing = async () => {
+    const startIndexing = async (sites) => {
         clearError();
-        const res = await request("http://localhost:8080/start-indexation");
+        const res = await request("http://localhost:8080/start-indexation", 'POST', sites);
         
         return res;
     }
@@ -34,7 +35,7 @@ const useSearchEngineService = () => {
         return res;
     }
 
-    const getSites = async () => {
+    const getNewSites = async () => {
         clearError();
         const res = await request("http://localhost:8080/new-sites");
         return res;
@@ -45,7 +46,7 @@ const useSearchEngineService = () => {
         return res;
     }
 
-    return {getStatistics, startIndexing, stopIndexing, addSite, getSites, deleteSite, loading, error};
+    return {getStatistics, startIndexing, stopIndexing, addSite, getNewSites, deleteSite, loading, error};
     
 }
 

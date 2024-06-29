@@ -1,25 +1,46 @@
-import {useEffect} from "react";
+import {useState, useEffect} from "react";
 import useSearchEngineService from "../../services/SearchEngineService";
 import {Container, Stack, Badge, Spinner} from 'react-bootstrap';
 import './dashboard.css';
 import ErrorMessage from "../errorMessage/ErrorMessage";
+import ListItems from "../listItems/ListItems";
+import SiteItem from "../siteItem/SiteItem";
+import SiteStatusComponent from "../siteStatusComponent/SiteStatusComponent";
 
-const DashboardPage = ({data, onDataLoaded}) => {
+const DashboardPage = ({isIndexing, data, onDataLoaded}) => {
+
+    const [indexingSites, setIndexingSites] = useState([]);
     
     const {getStatistics, loading, error} = useSearchEngineService();
+
+    const {siteCount, pageCount, lemmaCount} = data;
     
     const getData = () => {
         console.log('getData Dashboard');
         getStatistics().then(onDataLoaded);
     }
     
-
     useEffect(() => {
         console.log('first useEffect Dashboard');
         getData();
     }, []);
 
-    const {siteCount, pageCount, lemmaCount} = data;
+    useEffect(() => {
+        getStatistics().then((res) => {setIndexingSites(res.sites)});
+    }, [siteCount]);
+
+
+    const content = () => {
+        return ( 
+            (indexingSites.length > 0) 
+            ? <ListItems 
+                listItems={indexingSites} 
+                Component={SiteItem} 
+                StatusComponent={SiteStatusComponent}                
+            />
+            : <p className="no-site-msg">Any site was not indexed</p>
+            );       
+        }
     return (error) ? (<ErrorMessage/>) : 
         (<Container>
             <p>
@@ -46,6 +67,7 @@ const DashboardPage = ({data, onDataLoaded}) => {
                 </Stack>
             </Stack>
             }
+            {content()}
         </Container>
         );
 }

@@ -56,9 +56,12 @@
     font-size: 20px;
     color: brown;
     position: absolute;
-    bottom: 0px; /* Adjust this value to position the error message under the button */
+    bottom: 0px;
     left: 350px;
-    width: 100%;
+    width: 100%; 
+}
 
-    
+.no-site-msg {
+    font-size: 20px;
+    color: brown;
 }

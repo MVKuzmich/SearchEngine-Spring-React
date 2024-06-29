@@ -15,6 +15,7 @@ public class Detailed {
 
     private String url;
     private String name;
+    private String hash;
     private Status status;
     private long statusTime;
     private String error;

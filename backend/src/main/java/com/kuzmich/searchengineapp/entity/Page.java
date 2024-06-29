@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "page", indexes = @Index(columnList = "path, site_id", unique = true))
+// @Table(name = "page", indexes = @Index(columnList = "path, site_id", unique = true))
 @Getter
 @Setter
 @NoArgsConstructor
