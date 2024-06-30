@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
 import useSearchEngineService from "../../services/SearchEngineService";
-import {Container, Stack, Badge, Spinner} from 'react-bootstrap';
+import {Container, Stack, Badge, Spinner, Button} from 'react-bootstrap';
 import './dashboard.css';
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import ListItems from "../listItems/ListItems";
@@ -10,8 +10,9 @@ import SiteStatusComponent from "../siteStatusComponent/SiteStatusComponent";
 const DashboardPage = ({isIndexing, data, onDataLoaded}) => {
 
     const [indexingSites, setIndexingSites] = useState([]);
+    const [selectedItems, setSelectedItems] = useState([]);
     
-    const {getStatistics, loading, error} = useSearchEngineService();
+    const {getStatistics, deleteIndexedSites, loading, error} = useSearchEngineService();
 
     const {siteCount, pageCount, lemmaCount} = data;
     
@@ -19,22 +20,34 @@ const DashboardPage = ({isIndexing, data, onDataLoaded}) => {
         console.log('getData Dashboard');
         getStatistics().then(onDataLoaded);
     }
-    
+
+    const getSites = () => {
+        getStatistics().then((res) => {setIndexingSites(res.sites)});
+    }
+
+    const handleDeleteSites = () => {
+        deleteIndexedSites(JSON.stringify(selectedItems)).then(getData);
+        setSelectedItems([]);
+        
+    }
+
     useEffect(() => {
         console.log('first useEffect Dashboard');
         getData();
     }, []);
 
     useEffect(() => {
-        getStatistics().then((res) => {setIndexingSites(res.sites)});
-    }, [siteCount]);
+        getSites();
+    }, [siteCount, isIndexing]);
 
 
     const content = () => {
         return ( 
             (indexingSites.length > 0) 
             ? <ListItems 
-                listItems={indexingSites} 
+                listItems={indexingSites}
+                selectedItems={selectedItems}
+                setSelectedItems={setSelectedItems}
                 Component={SiteItem} 
                 StatusComponent={SiteStatusComponent}                
             />
@@ -67,7 +80,11 @@ const DashboardPage = ({isIndexing, data, onDataLoaded}) => {
                 </Stack>
             </Stack>
             }
-            {content()}
+            <div>{content()}</div>
+            <div className="dashboard-btn-wrapper">
+                <Button className="save-btn" type="button" onClick={handleDeleteSites} disabled={selectedItems.length === 0}>Delete sites</Button>
+            </div>
+            
         </Container>
         );
 }

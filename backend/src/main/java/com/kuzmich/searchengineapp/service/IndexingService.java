@@ -146,6 +146,24 @@ public class IndexingService {
         return new ResultDTO(true);
     }
 
+    public ResultDTO deleteIndexationResults(List<SiteObject> siteObjects) {
+        if(siteObjects == null || siteObjects.isEmpty()) {
+            throw new IndexExecutionException("List of sites is empty or do not exist");
+        }
+
+        siteObjects.forEach(site -> {
+                Optional<Site> siteOptional = siteRepository.findSiteByUrl(site.getUrl());
+                if(siteOptional.isEmpty()) {
+                    throw new IndexExecutionException(String.format("The site is not found by the url: %s", site.getUrl()));
+                }
+                siteRepository.delete(siteOptional.get());
+            
+            });
+    
+
+        return new ResultDTO(true);
+    }
+
     private void updateSiteStatus(String message, Status status) {
         List<Site> sites = siteRepository.findAll().stream().filter(site -> site.getStatus() == Status.INDEXING)
                 .collect(Collectors.toList());

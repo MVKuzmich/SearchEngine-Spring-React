@@ -57,6 +57,11 @@ public class IndexingController {
         
         return indexingService.deleteSite(site);
     }
+
+    @PostMapping("/delete-index-results")
+    public ResultDTO deleteIndexationResults(@RequestBody List<SiteObject> sites) {
+        return indexingService.deleteIndexationResults(sites);
+    }
     
 
     @GetMapping("/new-sites")
@@ -64,9 +69,5 @@ public class IndexingController {
         return indexingService.getSitesByStatus(Status.NEW);
     }
 
-    // @PostMapping("/index-page")
-    // public ResultDTO executePageIndexing(@RequestParam("url") String url) {
-    //     return indexingService.executePageIndexation(url);
-    // }
 
 }

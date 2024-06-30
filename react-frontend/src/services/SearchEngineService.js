@@ -46,7 +46,14 @@ const useSearchEngineService = () => {
         return res;
     }
 
-    return {getStatistics, startIndexing, stopIndexing, addSite, getNewSites, deleteSite, loading, error};
+    const deleteIndexedSites = async(data) => {
+        clearError();
+        const res = await request("http://localhost:8080/delete-index-results", 'POST', data);
+        return res;
+
+    }
+
+    return {getStatistics, startIndexing, stopIndexing, addSite, getNewSites, deleteSite, deleteIndexedSites, loading, error};
     
 }
 

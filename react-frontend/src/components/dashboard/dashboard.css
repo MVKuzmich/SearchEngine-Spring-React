@@ -2,3 +2,10 @@
     background-color: aqua;
     
 }
+
+.dashboard-btn-wrapper {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content:space-evenly;
+}

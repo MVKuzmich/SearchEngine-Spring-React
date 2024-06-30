@@ -51,8 +51,6 @@ public class Site extends BaseEntity {
     private String hash;
 
 
-
-
     public Site(Status status, long statusTime, String lastError, String url, String name) {
         this.status = status;
         this.statusTime = statusTime;
