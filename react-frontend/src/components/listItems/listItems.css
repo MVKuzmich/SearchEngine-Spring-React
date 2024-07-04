@@ -1,12 +1,26 @@
-.list-items{
-    font-size: 10px;
-    display: inline-flex;
+.list-items {
+    display: flex;
+    align-items: flex-start;
     justify-content: space-between;
-    align-items: center;
-    margin-right: 5px;
-    
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.item-index {
-    margin-right: 5px;
+.list-items input[type="checkbox"] {
+    margin-right: 15px;
+}
+
+.trash-btn {
+    background: none;
+    border: none;
+    color: #ff0000;
+    cursor: pointer;
+}
+
+.trash-btn:hover .trash-icon {
+    color: #b30000;
 }

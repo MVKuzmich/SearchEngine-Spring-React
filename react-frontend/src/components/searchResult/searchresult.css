@@ -1,0 +1,48 @@
+.search-result {
+  width: 100%;
+  text-align: left;
+  font-family: Arial, sans-serif;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.domain {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.url {
+  font-size: 0.9em;
+  color: #1a0dab;
+  text-decoration: none;
+}
+
+.url:hover {
+  text-decoration: underline;
+}
+
+.title {
+  margin: 5px 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.title a {
+  color: #1a0dab;
+  text-decoration: none;
+}
+
+.title a:hover {
+  text-decoration: underline;
+}
+
+.snippet {
+  font-size: 0.9em;
+  color: #545454;
+}

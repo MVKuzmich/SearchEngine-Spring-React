@@ -1,0 +1,11 @@
+.SearchTab {
+    text-align: center;
+    padding: 20px;
+    background-color: #4db6ac;
+    color: #fff;
+  }
+  
+  .SearchTab p {
+    font-size: 30px;
+    margin-bottom: 20px;
+  }

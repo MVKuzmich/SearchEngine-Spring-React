@@ -4,12 +4,25 @@ export const useHttp = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const request = useCallback(async (url, method = 'GET', body = null, headers = {'Content-Type': 'application/json'}) => {
+    const request = useCallback(
+        async (
+            url,
+            method = 'GET',
+            body = null,
+            headers = {'Content-Type': 'application/json'},
+            query = null, 
+            limit = null,
+            offset = null
+            ) => {
 
         setLoading(true);
 
         try {
-            const response = await fetch(url, {method, body, headers});
+            let requestUrl = url;
+            if(limit !== null && offset !== null && query !== null) {
+                requestUrl += `?query=${query}&limit=${limit}&offset=${offset}`;
+            }
+            const response = await fetch(requestUrl, {method, body, headers});
 
             const data = await response.json();
 

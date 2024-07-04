@@ -35,11 +35,11 @@ const ListItems = ({ listItems,
     const renderedStatusComponent = (typeof StatusComponent === "function" || React.isValidElement(StatusComponent)) ? <StatusComponent item = {item}/> : null;
     return (
       <div className="list-items" key={item.hash}>
-        {listItems.length > 0 && (<input
+        <input
               type="checkbox"
               checked={selectedItems.includes(item)}
               onChange={() => handleSelectItem(item)}
-            />)}
+            />
         <span className="list-items">
           {renderedComponent} {' '}
           {deleteItem !== ListItems.defaultProps.deleteItem && (<Button className="trash-btn" onClick={() => handleDeleteItem (item)}>

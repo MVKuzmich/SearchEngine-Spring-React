@@ -53,7 +53,13 @@ const useSearchEngineService = () => {
 
     }
 
-    return {getStatistics, startIndexing, stopIndexing, addSite, getNewSites, deleteSite, deleteIndexedSites, loading, error};
+    const sendUserQuery = async(query, offset, limit) => {
+        clearError();
+        const res = await request("http://localhost:8080/search", 'GET', null, {'Content-Type': 'application/json'}, query, limit, offset );
+        return res;
+    }
+
+    return {getStatistics, startIndexing, stopIndexing, addSite, getNewSites, deleteSite, deleteIndexedSites, sendUserQuery, loading, error};
     
 }
 
